@@ -56,35 +56,47 @@ Flow do curso Cypress Básico
 
 	cy.get('input[type="text"]').type('Olá mundo!').should('have.value', 'Olá mundo!')
 	
+	
 	Obs.: O .should é para validação do que deveria aparecer ou ter.
 	
 3. Selecionando (.select) elementos em listas suspensas
+	
 	3.1. Chamada por texto
+
 		it('seleciona um produto (YouTube) por seu texto', function(){
 		cy.get('#product').select('YouTube').should('have.value','youtube')
 		})
+	
 	3.2. Chamada por valor
+
 		it('seleciona um produto (Mentoria) por seu valor (value)', function(){
 		cy.get('#product').select('mentoria').should('have.value','mentoria')
 		})
+	
 	3.3. Chamada por índice
+
 		it('seleciona um produto (Blog) por seu índice', function(){
 		cy.get('#product').select(1).should('have.value','blog')
 		})
 
 4. Marcando inputs do tipo radio 
+
 	cy.get('input[type="radio"][value="feedback"]').check()
 
 5. Marcando (e desmarcando) inputs do tipo checkbox
+
 	cy.get('input[type="radio"][value="feedback"]').uncheck()
 	
 6. Upload de arquivos com Cypress
+
 	cy.get('input[type="file"]').selectFile('cypress/fixtures/example.json')
 	
+
 	6.1. Caso queira usar uma "variável" par não repetir o diretório do arquivo, existe o cy.fixture
 			O cy.fixture pega os arquivos inseridos na pasta fixture do cypress-basico-v2/src/index
 			Por exemplo:
 			
+
 			  it.only('seleciona um arquivo da pasta fixtures', function(){
 					cy.fixture('example.json').as('sampleFile')
 					cy.get('input[type=file]').selectFile('@sampleFile',{action:'drag-drop'})
@@ -92,6 +104,7 @@ Flow do curso Cypress Básico
 						expect(input[0].files[0].name).to.equal('example.json')
 				})
 			  })
+
 
 7. Lidando com links que abrem em outra aba
 	7.1. Primeiro vamos testar se o link abre e para isso devemos constatar que o target = _blank na âncora "a" do link, pois

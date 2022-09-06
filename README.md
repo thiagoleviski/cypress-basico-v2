@@ -151,6 +151,34 @@ Na pasta package.json do cypress escrevemos este script (ou atualizamos) com as 
 	Cypress._.repeat('*',3);
 		Resultado será ***
 	
+
+## Fazer commit do seu projeto no Github
+
+Na raiz do projeto, crie um diretório oculto chamado .github/, e dentro dele, crie um sub-diretório chamado workflows/.
+👨‍🏫 Você deve possuir a seguinte estrutura .github/workflows/
+
+Dentro do diretório .github/workflows/, crie um arquivo chamado ci.yml, com o seguinte conteúdo:
+name: End-to-end tests 🧪
+on: [push]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+Referência: https://github.com/cypress-io/github-action#basic
+
+O nome do arquivo poderia ser qualquer outro, escolhi ci pois é a versão curta para continuous integration (em português, integração contínua).
+
+Com o git, adicione todas suas mudanças para a área de staging (git add .)
+Faça um commit com a mensagem Create cypress project (git commit -m "Create cypress project")
+Envie suas mudanças locais para seu fork remoto no GitHub (git push origin main)
+Vá até o GitHub e veja sua mudança disparando o pipeline (e se tudo der certo, veja seus testes passando)
+
 ## Vamos começar?
 
 Vá para a seção [estrutura do curso](./lessons/_course-structure_.md).

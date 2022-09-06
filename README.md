@@ -132,7 +132,25 @@ Na pasta package.json do cypress escrevemos este script (ou atualizamos) com as 
 		"test": "cypress run",
 		"test:mobile": "cypress run --config viewportWidth=410 viewportHeight=860"
 	  }
+9. Parar o tempo
+	cy.clock()
 
+   Inserir tempo
+   cy.tick(1000)  //1000ms
+
+10. Repetir várias vezes a mesma função
+	Cypress._.times(5,function(){
+		it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function(){
+    cy.get('#email').type('thiago#gmail.com')
+    cy.get('button[type="submit"]').click()
+    cy.get('.error').should('be.visible')
+  })
+  })
+
+    Repetir uma string um certo número de vezes
+	Cypress._.repeat('*',3);
+		Resultado será ***
+	
 ## Vamos começar?
 
 Vá para a seção [estrutura do curso](./lessons/_course-structure_.md).

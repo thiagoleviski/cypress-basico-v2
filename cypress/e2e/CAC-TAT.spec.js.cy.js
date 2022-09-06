@@ -7,19 +7,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     cy.title().should('be.equal','Central de Atendimento ao Cliente TAT')
   })
 
-  it('preenche os campos obrigatórios e envia o formulário', function(){
+  // repetir o mesmo teste várias vezes (tipo um teste de desempenho)
+  Cypress._.times(5,function(){
+  it.only('preenche os campos obrigatórios e envia o formulário', function(){
     let longText = 'Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,';
-    
+    cy.clock()
     cy.get('#firstName').type('Thiago')
     cy.get('#lastName').type('Leviski')
     cy.get('#email').type('thiago@gmail.com')
     cy.get('#open-text-area').type(longText,{delay:0})
     //propriedade delay para colocar um tempo para a digitação
     cy.get('button[type="submit"]').click()
-
     cy.get('.success').should('be.visible')
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
   })
-
+})
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function(){
     cy.get('#email').type('thiago#gmail.com')
     cy.get('button[type="submit"]').click()

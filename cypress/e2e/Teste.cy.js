@@ -8,6 +8,12 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 // .invoke('show')
 // .invoke('hide')
 
+  it.only('gato',function(){
+    cy.get('span[id="cat"]')
+      .invoke('show')
+      .should('be.visible')
+  })
+
   it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', function() {
     cy.get('.success')
       .should('not.be.visible')
@@ -33,7 +39,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
   })
 
   // request GET
-  it.only('faz uma requisição HTTP', function(){
+  it('faz uma requisição HTTP', function(){
     cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
       .should(function(response){
         const{status, statusText, body} = response

@@ -1,138 +1,123 @@
-describe('Central de Atendimento ao Cliente TAT', function() {
-  beforeEach(function(){
-    cy.visit('./src/index.html')
-  })
-
-  it('verifica o título da aplicação', function() {
-    cy.title().should('be.equal','Central de Atendimento ao Cliente TAT')
-  })
-
-  // repetir o mesmo teste várias vezes (tipo um teste de desempenho)
-  Cypress._.times(5,function(){
-  it.only('preenche os campos obrigatórios e envia o formulário', function(){
-    let longText = 'Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,';
-    cy.clock()
-    cy.get('#firstName').type('Thiago')
-    cy.get('#lastName').type('Leviski')
-    cy.get('#email').type('thiago@gmail.com')
-    cy.get('#open-text-area').type(longText,{delay:0})
-    //propriedade delay para colocar um tempo para a digitação
-    cy.get('button[type="submit"]').click()
-    cy.get('.success').should('be.visible')
-    cy.tick(3000)
-    cy.get('.success').should('not.be.visible')
-  })
+beforeEach('chamando a URL', function(){
+  cy.visit('/src/index.html')
 })
+
+describe('Central de Atendimento ao Cliente TAT', function() {
+  it('verifica o título da aplicação', function() {
+    cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')
+  })
+
+  it('preenche os campos obrigatórios e envia o formulário', function(){
+    let palavraRepetida = Cypress._.repeat('ArarA',20)
+
+    cy.get('input[id=firstName]').type('Thiago').should('have.value','Thiago')
+    cy.get('input[id=lastName]').type('Leviski').should('have.value','Leviski')
+    cy.get('input[id=email]').type('thiago@gmail.com').should('have.value','thiago@gmail.com')
+    cy.get('textarea[id=open-text-area]').type(palavraRepetida,{delay:0}).should('have.value',palavraRepetida)
+    cy.get('button[type=submit]').click()
+    cy.should('be.visible','span[class=success]')
+
+  })
+
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', function(){
-    cy.get('#email').type('thiago#gmail.com')
-    cy.get('button[type="submit"]').click()
-    cy.get('.error').should('be.visible')
+    let palavraRepetida = Cypress._.repeat('ArarA',20)
+
+    cy.get('input[id=firstName]').type('Thiago').should('have.value','Thiago')
+    cy.get('input[id=lastName]').type('Leviski').should('have.value','Leviski')
+    cy.get('input[id=email]').type('thiago@gmail,com').should('have.value','thiago@gmail,com')
+    cy.get('textarea[id=open-text-area]').type(palavraRepetida,{delay:0}).should('have.value',palavraRepetida)
+    cy.get('button[type=submit]').click()
+    cy.should('be.visible','span[class=error]')
   })
 
-  it('telefone com valor não-numérico for digitado', function(){
-    cy.get('#phone').type('DDD').should('have.value','')
+  it('telefone somente aceita números',function(){
+    cy.get('input[id=phone]').type('João').should('be.visible',"")
+    cy.get('button[type=submit]').click()
+    cy.should('be.visible','span[class=error]')
   })
 
-  it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function(){
-    let longText = 'Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,';
-    
-    cy.get('#firstName').type('Thiago')
-    cy.get('#lastName').type('Leviski')
-    cy.get('#email').type('thiago@gmail.com')
-    cy.get('#open-text-area').type(longText,{delay:0})
-    cy.get('#phone-checkbox').check()
-    cy.get('button[type="submit"]').click()
-    cy.get('.error').should('be.visible')
+  it('mensagem de erro sem preencher os campos',function(){
+    cy.get('button[type=submit]').click()
+    cy.should('be.visible','span[class=error]')
   })
 
-  it('preenche e limpa os campos nome, sobrenome, email e telefone', function(){
-    let longText = 'Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,';
-    
-    cy.get('#firstName').type('Thiago').clear().should('have.value','')
-    cy.get('#lastName').type('Leviski').clear().should('have.value','')
-    cy.get('#email').type('thiago@gmail.com').clear().should('have.value','')
-    cy.get('#open-text-area').type(longText,{delay:0}).clear().should('have.value','')
-    cy.get('#phone-checkbox').click()
-    cy.get('#phone').type('123456789').clear().should('have.value','')
-  })
-
-  it('exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios',function(){
-    cy.get('button[type="submit"]').click()
-    cy.get('.error').should('be.visible')
-  })
-
-  it('envia o formuário com sucesso usando um comando customizado', function(){
+  it('chamando COMANDO do commands.js',function(){
     cy.fillMandatoryFieldsAndSubmit()
   })
 
-  it('seleciona um produto (YouTube) por seu texto', function(){
-    cy.get('#product').select('YouTube').should('have.value','youtube')
+  it('validando o cy.contains()', function(){
+    let palavraRepetida = Cypress._.repeat('ArarA',20)
+
+    cy.get('input[id=firstName]').type('Thiago').should('have.value','Thiago')
+    cy.get('input[id=lastName]').type('Leviski').should('have.value','Leviski')
+    cy.get('input[id=email]').type('thiago@gmail.com').should('have.value','thiago@gmail.com')
+    cy.get('textarea[id=open-text-area]').type(palavraRepetida,{delay:0}).should('have.value',palavraRepetida)
+    cy.contains('Enviar').click()
+    cy.should('be.visible','span[class=success]')
   })
 
-  it('seleciona um produto (Mentoria) por seu valor (value)', function(){
-    cy.get('#product').select('mentoria').should('have.value','mentoria')
+  it('Validando seleção de lista suspensa cy.select()',function(){
+    cy.get('select[id=product]').select('Blog').should('have.value','blog')
+    cy.get('select[id=product]').select('youtube').should('have.value','youtube')
+    cy.get('select[id=product]').select(2).should('have.value','cursos')
+    cy.get('select[id=product]').select('Mentoria').should('have.value','mentoria')
+
   })
 
-  it('seleciona um produto (Blog) por seu índice', function(){
-    cy.get('#product').select(1).should('have.value','blog')
+  it('Validando escolha da bolinha... radio com cy.check()',function(){
+    cy.get('input[type=radio][value=ajuda]').check().should('be.checked')
+    cy.get('input[type=radio][value=elogio]').check().should('be.checked')
+    cy.get('input[type=radio][value=feedback]').check().should('be.checked')
   })
 
-  it('marca o tipo de atendimento "Feedback"', function(){
-    cy.get(':nth-child(4) > input').check().should('have.value','feedback')
-    cy.get('input[type="radio"][value="feedback"]').check().should('have.value','feedback')
-  })
-  it('marca cada tipo de atendimento', function(){
-    cy.get('input[type="radio"][value="ajuda"]').check().should('have.value','ajuda').should('be.checked')
-    cy.get('input[type="radio"][value="elogio"]').check().should('have.value','elogio').should('be.checked')
-    cy.get('input[type="radio"][value="feedback"]').check().should('have.value','feedback').should('be.checked')
+  it('marca cada tipo de atendimento com função .each() e .wrap()',function(){
+    cy.get('input[type="radio"]').should('have.length',3)
+      .each(function($radio){
+        cy.wrap($radio).check()
+        cy.wrap($radio).should('be.checked')
+      })
   })
 
-  it('marca ambos checkboxes, depois desmarca o último', function(){
-    cy.get('#email-checkbox').check().should('be.checked')
-    cy.get('#phone-checkbox').check().should('be.checked')
-    cy.get('input[type=checkbox]').last().uncheck()
+  it('Validando escolha da caixa de seleção com cy.check() e cy.uncheck()',function(){
+    cy.get('input[type="checkbox"]').check()
+    cy.get('input[type="checkbox"][id="phone-checkbox"]').uncheck()
   })
 
-//função callback analisando o ARRAY input e retornando a comparação .to.equal
-//ao "name = example.json" deste ARRAY 
-
-  it('seleciona um arquivo da pasta fixtures', function(){
-    cy.get('input[type=file]').selectFile('./cypress/fixtures/example.json')
-    cy.get('input[type=file]').should(function(input){
-      expect(input[0].files[0].name).to.equal('example.json')
-    })
+  it('Validando mensagem de erro quando telefone fica obrigatório',function(){
+    cy.fillMandatoryFieldsAndSubmit()
+    cy.get('input[type="checkbox"]').check()
+    cy.get('button[type=submit]').click()
+    cy.should('be.visible','span[class=error]')
   })
 
-//função drag and drop
-
-  it('seleciona um arquivo da pasta fixtures', function(){
-    cy.get('input[type=file]').selectFile('./cypress/fixtures/example.json',{action:'drag-drop'})
-    cy.get('input[type=file]').should(function(input){
-      expect(input[0].files[0].name).to.equal('example.json')
-  })
+  it('Fazendo um upload de arquivo com cy.selectFile()', function(){
+    cy.get('input[id="file-upload"][type="file"]').click().selectFile('cypress/fixtures/example.json')
   })
 
-//setando o arquivo como fosse um "arquivo exemplo"
+  it('Fazendo um upload de arquivo com DRAG AND DROP', function(){
+    cy.get('input[id="file-upload"][type="file"]').click().selectFile('cypress/fixtures/example.json', {action:'drag-drop'})
+      .should(function($input){
+        console.log($input)
+        expect($input[0].files[0].name).be.equal('example.json')
+      })
+  })
 
-  it('seleciona um arquivo da pasta fixtures', function(){
+  it('Fazendo um upload de arquivo com ALIAS cy.as()', function(){
     cy.fixture('example.json').as('sampleFile')
-    cy.get('input[type=file]').selectFile('@sampleFile',{action:'drag-drop'})
-    cy.get('input[type=file]').should(function(input){
-      expect(input[0].files[0].name).to.equal('example.json')
-  })
-  })
-
-  //Somente verificar que clicando no link a aba vai abrir em outra janela
-  it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique', function(){
-    cy.get('#privacy a').should('have.attr', 'target', '_blank')
-
+    cy.get('input[type="file"]')
+      .selectFile("@sampleFile")
+      .should(function($input){
+        console.log($input)
+        expect($input[0].files[0].name).be.equal('example.json')
+      })
   })
 
-  //Somente verificar que clicando no link a aba vai abrir em outra janela de uma segunda forma
-  it('acessa a página da política de privacidade removendo o target e então clicanco no link', function(){
-    cy.get('#privacy a').invoke('removeAttr', 'target')
+  it('Checar se a o link vai abrir em outra janela, ou seja, se o target = _blank', function(){
+    cy.get('#privacy a').should('have.attr','target','_blank')
   })
 
-  // Para testar o link que se abre, é só realizar os testes chamando o link no cy.visit e segue igual o de sempre
-
+  it.only('Checar se a o link vai abrir em outra janela, ou seja, se o target = _blank', function(){
+    cy.get('a[href="privacy.html"]').invoke('removeAttr', 'target')
   })
+
+})

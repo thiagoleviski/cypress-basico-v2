@@ -24,15 +24,14 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('fillMandatoryFieldsAndSubmit', function(){
-    it('preenche e limpa os campos nome, sobrenome, email e telefone', function(){
-        let longText = 'Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,Teste,';
-        
-        cy.get('#firstName').type('Thiago').clear().should('have.value','')
-        cy.get('#lastName').type('Leviski').clear().should('have.value','')
-        cy.get('#email').type('thiago@gmail.com').clear().should('have.value','')
-        cy.get('#open-text-area').type(longText,{delay:0}).clear().should('have.value','')
-        cy.get('#phone-checkbox').click()
-        cy.get('#phone').type('123456789').clear().should('have.value','')
-      })
+Cypress.Commands.add('fillMandatoryFieldsAndSubmit',function(){
+
+    let palavraRepetida = Cypress._.repeat('ArarA',20)
+    cy.get('input[id=firstName]').type('Thiago').should('have.value','Thiago')
+    cy.get('input[id=lastName]').type('Leviski').should('have.value','Leviski')
+    cy.get('input[id=email]').type('thiago@gmail.com').should('have.value','thiago@gmail.com')
+    cy.get('textarea[id=open-text-area]').type(palavraRepetida,{delay:0}).should('have.value',palavraRepetida)
+    // cy.get('input[id=phone]').type('0123456789').should('be.visible',"0123456789")
+    // cy.get('button[type=submit]').click()
+    // cy.should('be.visible','span[class=success]')
 })
